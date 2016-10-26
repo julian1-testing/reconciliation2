@@ -207,6 +207,8 @@ public class ExploreDataset {
          * variable, however the data model is flexible enough for this to
          * change in specific implementations.
          */
+
+        System.out.println("------------------------" );
         System.out.println("The following features are defined in this dataset:");
         for (String featureId : dataset.getFeatureIds()) {
             System.out.println(featureId);
@@ -216,6 +218,8 @@ public class ExploreDataset {
          * dataset.getVariableMetadata() can be used to get metadata about a
          * particular variable
          */
+
+        System.out.println("------------------------" );
         GridVariableMetadata variableMetadata = dataset.getVariableMetadata("UCUR");
         System.out.println("The ID of the variable: " + variableMetadata.getId());
 
@@ -224,6 +228,7 @@ public class ExploreDataset {
         /*HorizontalGrid horizontalGrid = variableMetadata.getTemporalDomain(); */
         // TemporalDomain temporalDomain = variableMetadata.getTemporalDomain();
 
+        System.out.println("------------------------" );
         System.out.println("TEMPORAL : " );
         if (variableMetadata.getTemporalDomain() != null) {
             if (variableMetadata.getTemporalDomain() instanceof TimeAxis) {
@@ -240,6 +245,8 @@ public class ExploreDataset {
          * The horizontal domain of the variable. This gives the grid on which
          * the temperature variable is measured.
          */
+
+        System.out.println("------------------------" );
         System.out.println("SPATIAL:");
         HorizontalGrid horizontalGrid = variableMetadata.getHorizontalDomain();
         System.out.println("CRS: " + horizontalGrid.getCoordinateReferenceSystem());
@@ -306,7 +313,11 @@ public class ExploreDataset {
 //        System.out.println("The index of the t-dimension is: " + domainObjects.getTIndex());
 
 
+        // don't really need to look at the actual values...
 
+
+
+        System.out.println("------------------------" );
         /*
          * An example of getting the first element along the x axis and the 11th
          * element along the y axis (i.e. x=0, y=10)
