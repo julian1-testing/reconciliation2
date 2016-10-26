@@ -67,7 +67,9 @@ import uk.ac.rdg.resc.edal.metadata.DiscreteLayeredVariableMetadata;
 import uk.ac.rdg.resc.edal.metadata.VariableMetadata;
 
 
-
+// 
+import uk.ac.rdg.resc.edal.domain.TemporalDomain;
+import uk.ac.rdg.resc.edal.domain.VerticalDomain;
 
 
 
@@ -226,17 +228,20 @@ public class ExploreDataset {
 
 
         /*HorizontalGrid horizontalGrid = variableMetadata.getTemporalDomain(); */
-        // TemporalDomain temporalDomain = variableMetadata.getTemporalDomain();
+        TemporalDomain temporalDomain = variableMetadata.getTemporalDomain();
 
         System.out.println("------------------------" );
         System.out.println("TEMPORAL : " );
-        if (variableMetadata.getTemporalDomain() != null) {
-            if (variableMetadata.getTemporalDomain() instanceof TimeAxis) {
-                printTableLine(System.out, "Time axis ("
-                        + variableMetadata.getTemporalDomain().getChronology() + ")",
-                        String.format("%d values",
-                                ((TimeAxis) variableMetadata.getTemporalDomain()).size()));
-            }
+        if (temporalDomain != null && temporalDomain instanceof TimeAxis) {
+
+                printTableLine(System.out, "Time axis (" 
+                      + temporalDomain .getChronology() + ")",
+                      String.format("%d values", ((TimeAxis) temporalDomain).size())
+                );
+
+        } else {
+
+            System.out.println("Not a TimeAxis" + variableMetadata.getTemporalDomain());
         }
 
 
