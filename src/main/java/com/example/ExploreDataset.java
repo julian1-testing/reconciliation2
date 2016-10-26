@@ -30,6 +30,7 @@
 package com.example;
 
 
+import java.io.PrintStream;
 
 import java.io.IOException;
 //import java.net.URL;
@@ -49,6 +50,27 @@ import uk.ac.rdg.resc.edal.util.Array2D;
 import uk.ac.rdg.resc.edal.util.Array4D;
 // import uk.ac.rdg.resc.edal.util.Array3D;
 
+
+
+
+import org.opengis.metadata.extent.GeographicBoundingBox;
+
+import uk.ac.rdg.resc.edal.dataset.DataSource;
+import uk.ac.rdg.resc.edal.dataset.Dataset;
+import uk.ac.rdg.resc.edal.dataset.DiscreteLayeredDataset;
+import uk.ac.rdg.resc.edal.dataset.cdm.CdmGridDatasetFactory;
+import uk.ac.rdg.resc.edal.domain.Extent;
+// import uk.ac.rdg.resc.edal.graphics.utils.GraphicsUtils;  // different package...
+import uk.ac.rdg.resc.edal.grid.TimeAxis;
+import uk.ac.rdg.resc.edal.grid.VerticalAxis;
+import uk.ac.rdg.resc.edal.metadata.DiscreteLayeredVariableMetadata;
+import uk.ac.rdg.resc.edal.metadata.VariableMetadata;
+
+
+
+
+
+
 /**
  * This example shows how to use EDAL to open a gridded NetCDF dataset, access
  * the metadata of the variables within it, and read a feature from it.
@@ -57,6 +79,87 @@ import uk.ac.rdg.resc.edal.util.Array4D;
  */
 public class ExploreDataset {
 
+    private static void printTableLine(PrintStream ps, String title, String value) {
+        // ps.printf("<tr><TD><B>%s:</b></td><td>%s</td></tr>%n", title, value);
+        ps.printf("  - %s: %s\n", title, value);
+    }
+
+
+
+
+    private static void printVarInfo(PrintStream ps, VariableMetadata variableMetadata, Dataset dataset
+    /*, String filename, String imageDir */) throws IOException {
+        // ps.println("<hr />");
+        // ps.printf("<h2>Variable: %s</h2>%n", variableMetadata.getId());
+        ps.printf("\nVariable: %s %n", variableMetadata.getId());
+        /// ps.println("<table>");
+        // ps.println("<tbody>");
+        printTableLine(ps, "Title", variableMetadata.getParameter().getTitle());
+        printTableLine(ps, "Units", variableMetadata.getParameter().getUnits());
+        printTableLine(ps, "Description", variableMetadata.getParameter().getDescription());
+
+        GeographicBoundingBox bbox = variableMetadata.getHorizontalDomain()
+                .getGeographicBoundingBox();
+
+        printTableLine(
+                ps,
+                "Geographic Bounding box",
+                String.format("%f,%f,%f,%f", bbox.getWestBoundLongitude(),
+                        bbox.getSouthBoundLatitude(), bbox.getEastBoundLongitude(),
+                        bbox.getNorthBoundLatitude()));
+
+        if (variableMetadata.getVerticalDomain() != null) {
+            if (variableMetadata.getVerticalDomain() instanceof VerticalAxis) {
+                printTableLine(
+                        ps,
+                        "Elevation axis",
+                        String.format("%d values",
+                                ((VerticalAxis) variableMetadata.getVerticalDomain()).size()));
+            }
+        }
+
+/*
+  Included...
+        if (variableMetadata.getTemporalDomain() != null) {
+            if (variableMetadata.getTemporalDomain() instanceof TimeAxis) {
+                printTableLine(ps, "Time axis ("
+                        + variableMetadata.getTemporalDomain().getChronology() + ")",
+                        String.format("%d values",
+                                ((TimeAxis) variableMetadata.getTemporalDomain()).size()));
+            }
+        }
+*/
+        // ps.println("</tbody>");
+        // ps.println("</table>");
+
+        if (variableMetadata.isScalar()) {
+
+            System.out.println("is scalar");
+
+/*
+            int width = 256;
+            int height = 256;
+
+            BufferedImage im = GraphicsUtils.plotDefaultImage(dataset, variableMetadata.getId(),
+                    width, height);
+
+            Extent<Float> dataRange = GraphicsUtils.estimateValueRange(dataset,
+                    variableMetadata.getId());
+
+            String imageFilename = imageDir + "/" + dataset.getId() + "-"
+                    + variableMetadata.getId() + ".png";
+            ImageIO.write(im, "png", new File(imageFilename));
+
+            ps.printf("<p>Data min: %f, max: %f<br />", dataRange.getLow(), dataRange.getHigh());
+
+            ps.printf("<img src=\"%s\" width=\"%d\" height=\"%d\" /></p>%n", imageFilename, width,
+                    height);
+*/
+
+        } else {
+            ps.println("Not a scalar field - plotting is more complex, but there is no reason to think this won't work in ncWMS2");
+        }
+    }
 
 
     public static void explore(String filename ) throws EdalException, IOException {
@@ -116,15 +219,47 @@ public class ExploreDataset {
         GridVariableMetadata variableMetadata = dataset.getVariableMetadata("UCUR");
         System.out.println("The ID of the variable: " + variableMetadata.getId());
 
+
+
+        /*HorizontalGrid horizontalGrid = variableMetadata.getTemporalDomain(); */
+        // TemporalDomain temporalDomain = variableMetadata.getTemporalDomain();
+
+        System.out.println("TEMPORAL : " );
+        if (variableMetadata.getTemporalDomain() != null) {
+            if (variableMetadata.getTemporalDomain() instanceof TimeAxis) {
+                printTableLine(System.out, "Time axis ("
+                        + variableMetadata.getTemporalDomain().getChronology() + ")",
+                        String.format("%d values",
+                                ((TimeAxis) variableMetadata.getTemporalDomain()).size()));
+            }
+        }
+
+
+
         /*
          * The horizontal domain of the variable. This gives the grid on which
          * the temperature variable is measured.
          */
+        System.out.println("SPATIAL:");
         HorizontalGrid horizontalGrid = variableMetadata.getHorizontalDomain();
         System.out.println("CRS: " + horizontalGrid.getCoordinateReferenceSystem());
+
         System.out.println("BoundingBox: " + horizontalGrid.getBoundingBox());
         System.out.println("Grid x-size: " + horizontalGrid.getXSize());
         System.out.println("Grid y-size: " + horizontalGrid.getYSize());
+
+        GeographicBoundingBox bbox = horizontalGrid.getGeographicBoundingBox();
+
+        printTableLine(
+                System.out,
+                "Geographic Bounding box",
+                String.format("%f,%f,%f,%f", bbox.getWestBoundLongitude(),
+                        bbox.getSouthBoundLatitude(), bbox.getEastBoundLongitude(),
+                        bbox.getNorthBoundLatitude()));
+
+
+
+
         /*
          * Although we know that the grid has an x/y size, it is not necessarily
          * the case that the axes are separable in the CRS of the grid (e.g.
@@ -134,8 +269,6 @@ public class ExploreDataset {
          * RectilinearGrid, and we can see the specific axis values.
          */
         if (horizontalGrid instanceof RectilinearGrid) {
-
-            System.out.println("JA WHOOT horizontal grid");
 
             RectilinearGrid rectilinearGrid = (RectilinearGrid) horizontalGrid;
             ReferenceableAxis<Double> xAxis = rectilinearGrid.getXAxis();
@@ -224,7 +357,8 @@ public class ExploreDataset {
         /*
          * We can extract individual values
          */
-        System.out.println(values.get(0,0,90,180));
+        // values.get(0,0,1,1);
+        System.out.println(values.get(0,1,1,1));
 
         /*
          * Missing data (e.g. land in ocean datasets) is represented as null
