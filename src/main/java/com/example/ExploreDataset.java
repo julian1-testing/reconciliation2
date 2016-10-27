@@ -73,6 +73,11 @@ import uk.ac.rdg.resc.edal.domain.VerticalDomain;
 
 
 
+import uk.ac.rdg.resc.edal.grid.TimeAxis;
+
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
 /**
  * This example shows how to use EDAL to open a gridded NetCDF dataset, access
  * the metadata of the variables within it, and read a feature from it.
@@ -238,6 +243,22 @@ public class ExploreDataset {
                       + temporalDomain .getChronology() + ")",
                       String.format("%d values", ((TimeAxis) temporalDomain).size())
                 );
+
+                TimeAxis timeAxis = (TimeAxis) temporalDomain;
+                long minDeltaT = Long.MAX_VALUE;
+                for (DateTime time : timeAxis.getCoordinateValues()) {
+
+                    System.out.println("time is " + time);
+/*
+                    long dT = Math.abs(time.getMillis() - targetTime.getMillis());
+                    if (dT < minDeltaT) {
+                        minDeltaT = dT;
+                        nearestTime = time;
+                    }
+*/
+                }
+
+
 
         } else {
 
