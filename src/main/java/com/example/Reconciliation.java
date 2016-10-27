@@ -49,20 +49,6 @@ import java.lang.RuntimeException;
 
 
 
-import org.opengis.metadata.extent.GeographicBoundingBox;
-
-import uk.ac.rdg.resc.edal.dataset.DataSource;
-import uk.ac.rdg.resc.edal.dataset.Dataset;
-import uk.ac.rdg.resc.edal.dataset.DiscreteLayeredDataset;
-import uk.ac.rdg.resc.edal.dataset.cdm.CdmGridDatasetFactory;
-import uk.ac.rdg.resc.edal.domain.Extent;
-// import uk.ac.rdg.resc.edal.graphics.utils.GraphicsUtils;  // different package...
-import uk.ac.rdg.resc.edal.grid.TimeAxis;
-import uk.ac.rdg.resc.edal.grid.VerticalAxis;
-import uk.ac.rdg.resc.edal.metadata.DiscreteLayeredVariableMetadata;
-import uk.ac.rdg.resc.edal.metadata.VariableMetadata;
-
-
 
 
 public class Reconciliation {
@@ -84,54 +70,7 @@ public class Reconciliation {
 
 
 
-    private static void diagnoseDataset(String filename, PrintStream ps /*, String imageDir*/) {
 
-
-        ps.printf("<h1>Report from %s</h1>%n", filename);
-        CdmGridDatasetFactory df = new CdmGridDatasetFactory();
-        DiscreteLayeredDataset<? extends DataSource, ? extends DiscreteLayeredVariableMetadata> dataset;
-        try {
-            dataset = df.createDataset("dataset" /*+ (id++)*/ , filename);
-        } catch (Exception e) {
-            ps.println("<h2>File could not be read as a dataset:</h2>");
-            ps.println("<h2>" + filename + "</h2>");
-            ps.println("<h2>Stack trace follows:</h2>\n");
-            e.printStackTrace(ps);
-            return;
-        }
-
-
-
-        // We need the dimensions
-        // dataset.getDimensions();
-
-//        new ExploreDataset().explore( dataset ) ;
-
-/*
-        System.out.println("The following features are defined in this dataset:");
-        for (String featureId : dataset.getFeatureIds()) {
-            System.out.println(featureId);
-        }
-*/
-
-
-/*
-        Set<String> variableIds = dataset.getVariableIds();
-        for (String variableId : variableIds) {
-            VariableMetadata variableMetadata = dataset.getVariableMetadata(variableId);
-            try {
-                // private static void printInfo(PrintStream ps, VariableMetadata variableMetadata, Dataset dataset
-                printVarInfo( ps, variableMetadata, dataset );
-            } catch (Exception e) {
-                ps.println("<h2>Variable could not be read:</h2>");
-                ps.println("<h2>" + variableId + "</h2>");
-                ps.println("<h2>Stack trace follows:</h2>\n");
-                e.printStackTrace(ps);
-            }
-        }
-*/
-
-    }
 
 
     public static void usage(Options options) {
@@ -175,15 +114,10 @@ public class Reconciliation {
         String filename = "/home/meteo/imos/edal-java/in/IMOS_ACORN_V_20140103T063000Z_ROT_FV01_1-hour-avg.nc";
 
 
-//        diagnoseDataset(filename, System.out );
 
 
         new ExploreDataset().explore( filename );
 
-
-
-
-        /*
 
 
 
