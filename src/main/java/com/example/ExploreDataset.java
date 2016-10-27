@@ -87,151 +87,26 @@ import org.joda.time.DateTimeZone;
 public class ExploreDataset {
 
     private static void printTableLine(PrintStream ps, String title, String value) {
-        // ps.printf("<tr><TD><B>%s:</b></td><td>%s</td></tr>%n", title, value);
+
         ps.printf("  - %s: %s\n", title, value);
     }
 
 
+    // GridVariableMetadata is derived from VariableMetadata
 
-
-    private static void printVarInfo(PrintStream ps, VariableMetadata variableMetadata, Dataset dataset
+    private static void printVarInfo(PrintStream ps, GridVariableMetadata variableMetadata/*, Dataset dataset */
     /*, String filename, String imageDir */) throws IOException {
         // ps.println("<hr />");
         // ps.printf("<h2>Variable: %s</h2>%n", variableMetadata.getId());
-        ps.printf("\nVariable: %s %n", variableMetadata.getId());
-        /// ps.println("<table>");
-        // ps.println("<tbody>");
+
+        System.out.println("" );
+        System.out.println("************************" );
+
+        ps.printf("Variable: %s %n", variableMetadata.getId());
+
         printTableLine(ps, "Title", variableMetadata.getParameter().getTitle());
         printTableLine(ps, "Units", variableMetadata.getParameter().getUnits());
         printTableLine(ps, "Description", variableMetadata.getParameter().getDescription());
-
-/*
-        GeographicBoundingBox bbox = variableMetadata.getHorizontalDomain()
-                .getGeographicBoundingBox();
-
-        printTableLine(
-                ps,
-                "Geographic Bounding box",
-                String.format("%f,%f,%f,%f", bbox.getWestBoundLongitude(),
-                        bbox.getSouthBoundLatitude(), bbox.getEastBoundLongitude(),
-                        bbox.getNorthBoundLatitude()));
-
-        if (variableMetadata.getVerticalDomain() != null) {
-            if (variableMetadata.getVerticalDomain() instanceof VerticalAxis) {
-                printTableLine(
-                        ps,
-                        "Elevation axis",
-                        String.format("%d values",
-                                ((VerticalAxis) variableMetadata.getVerticalDomain()).size()));
-            }
-        }
-*/
-
-/*
-  Included...
-        if (variableMetadata.getTemporalDomain() != null) {
-            if (variableMetadata.getTemporalDomain() instanceof TimeAxis) {
-                printTableLine(ps, "Time axis ("
-                        + variableMetadata.getTemporalDomain().getChronology() + ")",
-                        String.format("%d values",
-                                ((TimeAxis) variableMetadata.getTemporalDomain()).size()));
-            }
-        }
-*/
-        // ps.println("</tbody>");
-        // ps.println("</table>");
-
-        if (variableMetadata.isScalar()) {
-
-            System.out.println("is scalar");
-
-/*
-            int width = 256;
-            int height = 256;
-
-            BufferedImage im = GraphicsUtils.plotDefaultImage(dataset, variableMetadata.getId(),
-                    width, height);
-
-            Extent<Float> dataRange = GraphicsUtils.estimateValueRange(dataset,
-                    variableMetadata.getId());
-
-            String imageFilename = imageDir + "/" + dataset.getId() + "-"
-                    + variableMetadata.getId() + ".png";
-            ImageIO.write(im, "png", new File(imageFilename));
-
-            ps.printf("<p>Data min: %f, max: %f<br />", dataRange.getLow(), dataRange.getHigh());
-
-            ps.printf("<img src=\"%s\" width=\"%d\" height=\"%d\" /></p>%n", imageFilename, width,
-                    height);
-*/
-
-        } else {
-            ps.println("Not a scalar field - plotting is more complex, but there is no reason to think this won't work in ncWMS2");
-        }
-    }
-
-
-    public static void explore(String filename ) throws EdalException, IOException {
-        /*
-         * Get the data path
-         */
-        // URL dataResource = ExploreDataset.class.getResource("/synthetic_data.nc");
-        // JA
-//        URL dataResource = ExploreDataset.class.getResource(filename );
-
-        /*
-         * Create a DatasetFactory. This can be used to create Datasets
-         */
-        CdmGridDatasetFactory factory = new CdmGridDatasetFactory();
-
-        /*
-         * Here we create a Dataset with the ID "example_dataset" from the
-         * synthetic_data.nc file.
-         * 
-         * CdmGridDatasetFactory returns two possible general classes -
-         * GriddedDataset and HorizontalMesh4dDataset (specifically either a
-         * CdmGridDataset or a CdmSgridDataset for the gridded case, and
-         * CdmUgridDataset for the mesh case)
-         * 
-         * Because we know that the underlying data is gridded, we can cast to a
-         * GriddedDataset. Doing so means that we get more useful metadata and
-         * exposes methods specific to grids
-         */
-        GriddedDataset dataset = (GriddedDataset) factory.createDataset("example_dataset",
-//                filename dataResource.getFile());
-                filename );
-
-        /*
-         * dataset.getVariableIds() will return a Set of the IDs of the
-         * variables available in this dataset.
-         */
-        System.out.println("The following variables are defined in this dataset:");
-        for (String variableId : dataset.getVariableIds()) {
-            System.out.println(variableId);
-        }
-
-        /*
-         * dataset.getFeatureIds() will return a Set of the IDs of the features
-         * available in this dataset. By default there is one feature for each
-         * variable, however the data model is flexible enough for this to
-         * change in specific implementations.
-         */
-/*
-        System.out.println("------------------------" );
-        System.out.println("The following features are defined in this dataset:");
-        for (String featureId : dataset.getFeatureIds()) {
-            System.out.println(featureId);
-        }
-*/
-
-        /*
-         * dataset.getVariableMetadata() can be used to get metadata about a
-         * particular variable
-         */
-
-        System.out.println("------------------------" );
-        GridVariableMetadata variableMetadata = dataset.getVariableMetadata("UCUR");
-        System.out.println("The ID of the variable: " + variableMetadata.getId());
 
 
 
@@ -349,64 +224,96 @@ public class ExploreDataset {
         // don't really need to look at the actual values...
 
 
-
-        System.out.println("------------------------" );
-        /*
-         * An example of getting the first element along the x axis and the 11th
-         * element along the y axis (i.e. x=0, y=10)
-         */
-        System.out.println("The grid cell at xindex=0, yindex=10: " + domainObjects.get(10, 0));
-        /*
-         * Although the toString() method just prints the grid cell centre, more
-         * information is available...
-         */
-        GridCell2D gridCell = domainObjects.get(10, 0);
-        /*
-         * The parent grid containing this cell
-         */
-        System.out.println("The cell's parent grid is the HorizontalGrid we extracted it from: "
-                + (gridCell.getParentDomain().equals(horizontalGrid)));
-        /*
-         * The footprint of the grid cell - in this case it is a rectangle
-         */
-        System.out.println("The footprint of the grid cell: " + gridCell.getFootprint());
-        /*
-         * The grid-based coordinates of the cell
-         */
-        System.out.println("The coordinates in the parent grid: " + gridCell.getGridCoordinates());
+    }
 
 
-
+    public static void explore(String filename ) throws EdalException, IOException {
+        /*
+         * Get the data path
+         */
+        // URL dataResource = ExploreDataset.class.getResource("/synthetic_data.nc");
+        // JA
+//        URL dataResource = ExploreDataset.class.getResource(filename );
 
         /*
-         * We can read any of the features to get the full data for the associated variable(s).
+         * Create a DatasetFactory. This can be used to create Datasets
          */
-        GridFeature readFeature = dataset.readFeature("UCUR");
-        
+        CdmGridDatasetFactory factory = new CdmGridDatasetFactory();
+
         /*
-         * If we read a parent variable, all of its children will also be included
+         * Here we create a Dataset with the ID "example_dataset" from the
+         * synthetic_data.nc file.
+         * 
+         * CdmGridDatasetFactory returns two possible general classes -
+         * GriddedDataset and HorizontalMesh4dDataset (specifically either a
+         * CdmGridDataset or a CdmSgridDataset for the gridded case, and
+         * CdmUgridDataset for the mesh case)
+         * 
+         * Because we know that the underlying data is gridded, we can cast to a
+         * GriddedDataset. Doing so means that we get more useful metadata and
+         * exposes methods specific to grids
          */
-        System.out.println("The following parameters are available in the temp uncert group:");
-        for (String param : readFeature.getVariableIds()) {
-            System.out.println(param);
+        GriddedDataset dataset = (GriddedDataset) factory.createDataset("example_dataset", filename );
+
+        /*
+         * dataset.getVariableIds() will return a Set of the IDs of the
+         * variables available in this dataset.
+         */
+        System.out.println("The following variables are defined in this dataset:");
+        for (String variableId : dataset.getVariableIds()) {
+
+            GridVariableMetadata variableMetadata = dataset.getVariableMetadata( variableId );
+            printVarInfo(System.out, variableMetadata /*, dataset  */ );
         }
-        
-        /*
-         * Now we can read the data
-         */
-        Array4D<Number> values = readFeature.getValues("UCUR");
-
-        System.out.println("Shape of data: "+Arrays.toString(values.getShape()));
 
         /*
-         * We can extract individual values
+         * dataset.getFeatureIds() will return a Set of the IDs of the features
+         * available in this dataset. By default there is one feature for each
+         * variable, however the data model is flexible enough for this to
+         * change in specific implementations.
          */
-        // values.get(0,0,1,1);
-        System.out.println(values.get(0,1,1,1));
+/*
+        System.out.println("------------------------" );
+        System.out.println("The following features are defined in this dataset:");
+        for (String featureId : dataset.getFeatureIds()) {
+            System.out.println(featureId);
+        }
+*/
 
-        /*
-         * Missing data (e.g. land in ocean datasets) is represented as null
-         */
-//       System.out.println(values.get(0,0,0,0));
+
+
     }
 }
+
+
+
+
+/*
+        if (variableMetadata.isScalar()) {
+
+            System.out.println("is scalar");
+
+
+            int width = 256;
+            int height = 256;
+
+            BufferedImage im = GraphicsUtils.plotDefaultImage(dataset, variableMetadata.getId(),
+                    width, height);
+
+            Extent<Float> dataRange = GraphicsUtils.estimateValueRange(dataset,
+                    variableMetadata.getId());
+
+            String imageFilename = imageDir + "/" + dataset.getId() + "-"
+                    + variableMetadata.getId() + ".png";
+            ImageIO.write(im, "png", new File(imageFilename));
+
+            ps.printf("<p>Data min: %f, max: %f<br />", dataRange.getLow(), dataRange.getHigh());
+
+            ps.printf("<img src=\"%s\" width=\"%d\" height=\"%d\" /></p>%n", imageFilename, width,
+                    height);
+
+
+        } else {
+            ps.println("Not a scalar field - plotting is more complex, but there is no reason to think this won't work in ncWMS2");
+        }
+*/
