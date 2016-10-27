@@ -105,6 +105,7 @@ public class ExploreDataset {
         printTableLine(ps, "Units", variableMetadata.getParameter().getUnits());
         printTableLine(ps, "Description", variableMetadata.getParameter().getDescription());
 
+/*
         GeographicBoundingBox bbox = variableMetadata.getHorizontalDomain()
                 .getGeographicBoundingBox();
 
@@ -124,6 +125,7 @@ public class ExploreDataset {
                                 ((VerticalAxis) variableMetadata.getVerticalDomain()).size()));
             }
         }
+*/
 
 /*
   Included...
@@ -214,12 +216,13 @@ public class ExploreDataset {
          * variable, however the data model is flexible enough for this to
          * change in specific implementations.
          */
-
+/*
         System.out.println("------------------------" );
         System.out.println("The following features are defined in this dataset:");
         for (String featureId : dataset.getFeatureIds()) {
             System.out.println(featureId);
         }
+*/
 
         /*
          * dataset.getVariableMetadata() can be used to get metadata about a
@@ -286,9 +289,13 @@ public class ExploreDataset {
         printTableLine(
                 System.out,
                 "Geographic Bounding box",
-                String.format("%f,%f,%f,%f", bbox.getWestBoundLongitude(),
-                        bbox.getSouthBoundLatitude(), bbox.getEastBoundLongitude(),
-                        bbox.getNorthBoundLatitude()));
+                String.format("%f,%f,%f,%f", 
+                    bbox.getWestBoundLongitude(),
+                    bbox.getSouthBoundLatitude(), 
+                    bbox.getEastBoundLongitude(),
+                    bbox.getNorthBoundLatitude()
+                )
+        );
 
 
 
